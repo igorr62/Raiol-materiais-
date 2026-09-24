@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raiol Materiais</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f2f3f5;
+    color: #171717;
+}
+
+.app {
+    max-width: 500px;
+    margin: auto;
+    min-height: 100vh;
+    background: #f2f3f5;
+    padding-bottom: 90px;
+}
+
+.header {
+    background: #171717;
+    color: white;
+    padding: 28px 20px 24px;
+    border-radius: 0 0 25px 25px;
+}
+
+.header small {
+    opacity: .7;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+.card {
+    background: white;
+    margin: 16px;
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.valor {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px;
+}
+
+.box {
+    background: white;
+    padding: 18px;
+    border-radius: 17px;
+}
+
+.box span {
+    display: block;
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.box strong {
+    font-size: 21px;
+}
+
+button {
+    border: none;
+    border-radius: 13px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 8px;
+    background: #171717;
+    color: white;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.menu {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    box-shadow: 0 -3px 15px rgba(0,0,0,.1);
+}
+
+.menu button {
+    background: transparent;
+    color: #555;
+    margin: 0;
+    font-size: 13px;
+}
+
+.menu button.active {
+    color: #000;
+    font-weight: 800;
+}
+
+.secao {
+    display: none;
+}
+
+.secao.ativa {
+    display: block;
+}
+
+.linha {
+    display: flex;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.verde {
+    color: #159447;
+}
+
+.vermelho {
+    color: #d33;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <small>CONTROLE DA LOJA</small>
+    <h1>Raiol Materiais</h1>
+</header>
+
+<!-- INÍCIO -->
+<section id="inicio" class="secao ativa">
+
+<div class="card">
+    <h2>Resumo de hoje</h2>
+    <div class="valor" id="vendasHoje">R$ 0,00</div>
+    <small>Faturamento registrado</small>
+</div>
+
+<div class="grid">
+    <div class="box">
+        <span>Vendas</span>
+        <strong id="qtdVendas">0</strong>
+    </div>
+
+    <div class="box">
+        <span>Despesas</span>
+        <strong id="despesasHoje">R$ 0,00</strong>
+    </div>
+
+    <div class="box">
+        <span>Reserva boletos</span>
+        <strong id="reserva">R$ 0,00</strong>
+    </div>
+
+    <div class="box">
+        <span>Saldo do dia</span>
+        <strong id="saldo">R$ 0,00</strong>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Reserva diária</h2>
+    <p>Meta diária para boletos: <strong>R$ 15,00</strong></p>
+    <button onclick="adicionarReserva()">Guardar R$ 15 hoje</button>
+</div>
+
+</section>
+
+<!-- VENDAS -->
+<section id="vendas" class="secao">
+
+<div class="card">
+    <h2>Nova venda</h2>
+
+    <input id="produto" placeholder="Produto">
+    <input id="valorVenda" type="number" step="0.01" placeholder="Valor da venda">
+
+    <button onclick="registrarVenda()">Registrar venda</button>
+</div>
+
+<div class="card">
+    <h2>Vendas registradas</h2>
+    <div id="listaVendas"></div>
+</div>
+
+</section>
+
+<!-- DESPESAS -->
+<section id="despesas" class="secao">
+
+<div class="card">
+    <h2>Nova despesa</h2>
+
+    <input id="descDespesa" placeholder="Descrição">
+    <input id="valorDespesa" type="number" step="0.01" placeholder="Valor">
+
+    <button onclick="registrarDespesa()">Registrar despesa</button>
+</div>
+
+<div class="card">
+    <h2>Despesas registradas</h2>
+    <div id="listaDespesas"></div>
+</div>
+
+</section>
+
+</div>
+
+<nav class="menu">
+    <button class="active" onclick="mostrar('inicio', this)">🏠<br>Início</button>
+    <button onclick="mostrar('vendas', this)">💰<br>Vendas</button>
+    <button onclick="mostrar('despesas', this)">📋<br>Despesas</button>
+</nav>
+
+<script>
+
+let vendas = JSON.parse(localStorage.getItem("raiol_vendas")) || [];
+let despesas = JSON.parse(localStorage.getItem("raiol_despesas")) || [];
+let reserva = Number(localStorage.getItem("raiol_reserva")) || 0;
+
+function dinheiro(valor) {
+    return valor.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+function hoje() {
+    return new Date().toLocaleDateString("pt-BR");
+}
+
+function salvar() {
+    localStorage.setItem("raiol_vendas", JSON.stringify(vendas));
+    localStorage.setItem("raiol_despesas", JSON.stringify(despesas));
+    localStorage.setItem("raiol_reserva", reserva);
+}
+
+function registrarVenda() {
+
+    let produto = document.getElementById("produto").value;
+    let valor = Number(document.getElementById("valorVenda").value);
+
+    if (!produto || !valor) {
+        alert("Preencha o produto e o valor.");
+        return;
+    }
+
+    vendas.push({
+        produto: produto,
+        valor: valor,
+        data: hoje()
+    });
+
+    salvar();
+
+    document.getElementById("produto").value = "";
+    document.getElementById("valorVenda").value = "";
+
+    atualizar();
+    alert("Venda registrada!");
+}
+
+function registrarDespesa() {
+
+    let descricao = document.getElementById("descDespesa").value;
+    let valor = Number(document.getElementById("valorDespesa").value);
+
+    if (!descricao || !valor) {
+        alert("Preencha a descrição e o valor.");
+        return;
+    }
+
+    despesas.push({
+        descricao: descricao,
+        valor: valor,
+        data: hoje()
+    });
+
+    salvar();
+
+    document.getElementById("descDespesa").value = "";
+    document.getElementById("valorDespesa").value = "";
+
+    atualizar();
+    alert("Despesa registrada!");
+}
+
+function adicionarReserva() {
+
+    reserva += 15;
+
+    salvar();
+    atualizar();
+
+    alert("R$ 15 adicionados à reserva de boletos!");
+}
+
+function atualizar() {
+
+    let vendasHoje = vendas.filter(v => v.data === hoje());
+    let despesasHoje = despesas.filter(d => d.data === hoje());
+
+    let totalVendas = vendasHoje.reduce((soma, v) => soma + v.valor, 0);
+    let totalDespesas = despesasHoje.reduce((soma, d) => soma + d.valor, 0);
+
+    document.getElementById("vendasHoje").innerText = dinheiro(totalVendas);
+    document.getElementById("qtdVendas").innerText = vendasHoje.length;
+    document.getElementById("despesasHoje").innerText = dinheiro(totalDespesas);
+    document.getElementById("reserva").innerText = dinheiro(reserva);
+    document.getElementById("saldo").innerText = dinheiro(totalVendas - totalDespesas);
+
+    document.getElementById("listaVendas").innerHTML =
+        vendas.slice().reverse().map(v =>
+            `<div class="linha">
+                <span>${v.produto}</span>
+                <strong class="verde">${dinheiro(v.valor)}</strong>
+            </div>`
+        ).join("") || "<p>Nenhuma venda registrada.</p>";
+
+    document.getElementById("listaDespesas").innerHTML =
+        despesas.slice().reverse().map(d =>
+            `<div class="linha">
+                <span>${d.descricao}</span>
+                <strong class="vermelho">${dinheiro(d.valor)}</strong>
+            </div>`
+        ).join("") || "<p>Nenhuma despesa registrada.</p>";
+}
+
+function mostrar(id, botao) {
+
+    document.querySelectorAll(".secao").forEach(s => {
+        s.classList.remove("ativa");
+    });
+
+    document.getElementById(id).classList.add("ativa");
+
+    document.querySelectorAll(".menu button").forEach(b => {
+        b.classList.remove("active");
+    });
+
+    botao.classList.add("active");
+}
+
+atualizar();
+
+</script>
+
+</body>
+</html>
