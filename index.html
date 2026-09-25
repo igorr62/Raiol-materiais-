@@ -1,387 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Raiol Materiais</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<title>Raiol Materiais V3</title>
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f2f3f5;
-    color: #171717;
-}
-
-.app {
-    max-width: 500px;
-    margin: auto;
-    min-height: 100vh;
-    background: #f2f3f5;
-    padding-bottom: 90px;
-}
-
-.header {
-    background: #171717;
-    color: white;
-    padding: 28px 20px 24px;
-    border-radius: 0 0 25px 25px;
-}
-
-.header small {
-    opacity: .7;
-}
-
-.header h1 {
-    font-size: 28px;
-    margin-top: 5px;
-}
-
-.card {
-    background: white;
-    margin: 16px;
-    padding: 18px;
-    border-radius: 18px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.06);
-}
-
-.card h2 {
-    font-size: 18px;
-    margin-bottom: 14px;
-}
-
-.valor {
-    font-size: 30px;
-    font-weight: 700;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin: 16px;
-}
-
-.box {
-    background: white;
-    padding: 18px;
-    border-radius: 17px;
-}
-
-.box span {
-    display: block;
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 7px;
-}
-
-.box strong {
-    font-size: 21px;
-}
-
-button {
-    border: none;
-    border-radius: 13px;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    width: 100%;
-    margin-top: 8px;
-    background: #171717;
-    color: white;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.menu {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 500px;
-    background: white;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    padding: 10px;
-    box-shadow: 0 -3px 15px rgba(0,0,0,.1);
-}
-
-.menu button {
-    background: transparent;
-    color: #555;
-    margin: 0;
-    font-size: 13px;
-}
-
-.menu button.active {
-    color: #000;
-    font-weight: 800;
-}
-
-.secao {
-    display: none;
-}
-
-.secao.ativa {
-    display: block;
-}
-
-.linha {
-    display: flex;
-    justify-content: space-between;
-    padding: 11px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.verde {
-    color: #159447;
-}
-
-.vermelho {
-    color: #d33;
-}
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--brand:#111827;--danger:#b91c1c;--ok:#166534;--warn:#92400e}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:520px;margin:0 auto;padding-bottom:90px}.top{background:var(--brand);color:#fff;padding:24px 18px 18px;border-radius:0 0 22px 22px}.top small{opacity:.75;letter-spacing:.08em}.top h1{margin:6px 0 0;font-size:26px}.wrap{padding:0 14px}.card{background:var(--card);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 2px 12px rgba(17,24,39,.08)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(17,24,39,.06)}.metric small{display:block;color:var(--muted);font-size:12px}.metric strong{font-size:18px;display:block;margin-top:5px}.big{font-size:30px;font-weight:800;margin:6px 0}.muted{color:var(--muted);font-size:12px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.line{padding:12px 0;border-bottom:1px solid var(--line)}.line:last-child{border-bottom:0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}button,input,select{font:inherit}button{border:0;border-radius:11px;padding:10px 12px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}button.ghost{background:#eef0f3;color:var(--ink)}button.danger{background:var(--danger)}button.small{font-size:12px;padding:8px 10px}input,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:10px;background:#fff;margin:5px 0 10px}label{font-size:12px;color:#4b5563}.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.12);z-index:20}.nav button{background:transparent;color:#6b7280;padding:6px 2px;font-size:11px}.nav button.active{color:#111827;font-weight:800}.sec{display:none}.sec.active{display:block}.empty{text-align:center;padding:16px;color:var(--muted)}.tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef0f3;font-size:11px;color:#374151}.tag.ok{background:#dcfce7;color:var(--ok)}.tag.warn{background:#fef3c7;color:var(--warn)}.tag.danger{background:#fee2e2;color:var(--danger)}.progress{height:9px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:#111827;width:0}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:30}.modal.show{display:flex}.sheet{width:100%;max-width:520px;margin:auto;background:#fff;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow:auto}.title{font-size:18px;font-weight:800;margin:0}.subtle{font-size:12px;color:var(--muted)}.kpi{font-size:22px;font-weight:800}.mini{font-size:11px;color:var(--muted)}
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
-<header class="header">
-    <small>CONTROLE DA LOJA</small>
-    <h1>Raiol Materiais</h1>
-</header>
-
-<!-- INÍCIO -->
-<section id="inicio" class="secao ativa">
-
-<div class="card">
-    <h2>Resumo de hoje</h2>
-    <div class="valor" id="vendasHoje">R$ 0,00</div>
-    <small>Faturamento registrado</small>
-</div>
-
-<div class="grid">
-    <div class="box">
-        <span>Vendas</span>
-        <strong id="qtdVendas">0</strong>
-    </div>
-
-    <div class="box">
-        <span>Despesas</span>
-        <strong id="despesasHoje">R$ 0,00</strong>
-    </div>
-
-    <div class="box">
-        <span>Reserva boletos</span>
-        <strong id="reserva">R$ 0,00</strong>
-    </div>
-
-    <div class="box">
-        <span>Saldo do dia</span>
-        <strong id="saldo">R$ 0,00</strong>
-    </div>
-</div>
-
-<div class="card">
-    <h2>Reserva diária</h2>
-    <p>Meta diária para boletos: <strong>R$ 15,00</strong></p>
-    <button onclick="adicionarReserva()">Guardar R$ 15 hoje</button>
-</div>
-
+<header class="top"><small>CONTROLE DA LOJA</small><h1>Raiol Materiais V3</h1></header>
+<div class="wrap">
+<section id="home" class="sec active">
+  <div class="card"><div class="subtle">Saldo estimado do caixa</div><div class="big" id="saldo">R$ 0,00</div><div class="subtle">Entradas menos saídas registradas</div></div>
+  <div class="grid">
+    <div class="metric"><small>Vendas hoje</small><strong id="vHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>Custos hoje</small><strong id="cHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>Despesas hoje</small><strong id="dHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>A pagar</small><strong id="aPagar">R$ 0,00</strong></div>
+  </div>
+  <div class="card"><div class="row"><div><div class="title">Reserva para boletos</div><div class="subtle">Meta diária de R$ 15</div></div><div class="kpi" id="reserva">R$ 0,00</div></div><div style="margin:12px 0" class="progress"><div id="bar"></div></div><button onclick="guardarReserva()">Guardar R$ 15 hoje</button></div>
+  <div class="card"><div class="title">Resumo financeiro</div><div id="resumo"></div></div>
 </section>
-
-<!-- VENDAS -->
-<section id="vendas" class="secao">
-
-<div class="card">
-    <h2>Nova venda</h2>
-
-    <input id="produto" placeholder="Produto">
-    <input id="valorVenda" type="number" step="0.01" placeholder="Valor da venda">
-
-    <button onclick="registrarVenda()">Registrar venda</button>
+<section id="vendas" class="sec"><div class="card"><div class="row"><div class="title">Vendas</div><button class="small" onclick="abrir('venda')">+ Nova venda</button></div><div id="listaVendas"></div></div></section>
+<section id="financeiro" class="sec"><div class="card"><div class="row"><div class="title">Custos</div><button class="small" onclick="abrir('custo')">+ Novo custo</button></div><div id="listaCustos"></div></div><div class="card"><div class="row"><div class="title">Despesas</div><button class="small" onclick="abrir('despesa')">+ Nova despesa</button></div><div id="listaDespesas"></div></div></section>
+<section id="pagar" class="sec"><div class="card"><div class="row"><div class="title">Contas a pagar</div><button class="small" onclick="abrir('conta')">+ Nova conta</button></div><div id="listaContas"></div></div><div class="card"><div class="row"><div class="title">Boletos</div><button class="small" onclick="abrir('boleto')">+ Novo boleto</button></div><div id="listaBoletos"></div></div></section>
+<section id="caixa" class="sec"><div class="card"><div class="row"><div class="title">Caixa</div><button class="small" onclick="abrir('caixa')">+ Movimento</button></div><div id="listaCaixa"></div></div><div class="card"><div class="title">Fechamento</div><div id="fechamento"></div></div></section>
 </div>
-
-<div class="card">
-    <h2>Vendas registradas</h2>
-    <div id="listaVendas"></div>
+<nav class="nav"><button class="active" onclick="mostrar('home',this)">🏠<br>Início</button><button onclick="mostrar('vendas',this)">💰<br>Vendas</button><button onclick="mostrar('financeiro',this)">📊<br>Financeiro</button><button onclick="mostrar('pagar',this)">🧾<br>A pagar</button><button onclick="mostrar('caixa',this)">💵<br>Caixa</button></nav>
 </div>
-
-</section>
-
-<!-- DESPESAS -->
-<section id="despesas" class="secao">
-
-<div class="card">
-    <h2>Nova despesa</h2>
-
-    <input id="descDespesa" placeholder="Descrição">
-    <input id="valorDespesa" type="number" step="0.01" placeholder="Valor">
-
-    <button onclick="registrarDespesa()">Registrar despesa</button>
-</div>
-
-<div class="card">
-    <h2>Despesas registradas</h2>
-    <div id="listaDespesas"></div>
-</div>
-
-</section>
-
-</div>
-
-<nav class="menu">
-    <button class="active" onclick="mostrar('inicio', this)">🏠<br>Início</button>
-    <button onclick="mostrar('vendas', this)">💰<br>Vendas</button>
-    <button onclick="mostrar('despesas', this)">📋<br>Despesas</button>
-</nav>
-
+<div id="modal" class="modal"><div class="sheet"><div class="row"><div id="modalTitle" class="title"></div><button class="ghost small" onclick="fechar()">Fechar</button></div><div id="modalBody"></div></div></div>
 <script>
-
-let vendas = JSON.parse(localStorage.getItem("raiol_vendas")) || [];
-let despesas = JSON.parse(localStorage.getItem("raiol_despesas")) || [];
-let reserva = Number(localStorage.getItem("raiol_reserva")) || 0;
-
-function dinheiro(valor) {
-    return valor.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
+const KEY='raiol_materiais_v3';
+const BRL=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const TODAY=()=>new Date().toISOString().slice(0,10);
+const NOW=()=>new Date().toTimeString().slice(0,5);
+let db=JSON.parse(localStorage.getItem(KEY)||'null')||{vendas:[],custos:[],despesas:[],contas:[],boletos:[],caixa:[],reserva:0};
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function sum(arr){return arr.reduce((a,x)=>a+Number(x.valor||0),0)}
+function mostrar(id,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render()}
+function guardarReserva(){db.reserva=Number(db.reserva||0)+15;save();render();alert('R$ 15 adicionados à reserva.');}
+function abrir(tipo){
+ const titulo={venda:'Nova venda',custo:'Novo custo',despesa:'Nova despesa',conta:'Nova conta a pagar',boleto:'Novo boleto',caixa:'Novo movimento de caixa'}[tipo];
+ document.getElementById('modalTitle').textContent=titulo;
+ const data=(['venda','custo','despesa','caixa'].includes(tipo))?`<label>Data</label><input id="fData" type="date" value="${TODAY()}"><label>Hora</label><input id="fHora" type="time" value="${NOW()}">`:'';
+ const venc=(['conta','boleto'].includes(tipo))?`<label>Vencimento</label><input id="fVenc" type="date">`:'';
+ const pay=tipo==='venda'?`<label>Forma de pagamento</label><select id="fPag"><option>Dinheiro</option><option>PIX</option><option>Débito</option><option>Crédito</option><option>Fiado</option><option>Outro</option></select>`:'';
+ const move=tipo==='caixa'?`<label>Tipo</label><select id="fTipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select>`:'';
+ document.getElementById('modalBody').innerHTML=`<label>Descrição / produto</label><input id="fDesc" placeholder="Ex.: 7 sacos de cimento"><label>Valor total</label><input id="fValor" type="number" step="0.01" placeholder="0,00">${data}${venc}${pay}${move}<label>Observação</label><input id="fObs" placeholder="Opcional"><button onclick="salvar('${tipo}')">Salvar lançamento</button>`;
+ document.getElementById('modal').classList.add('show');
 }
-
-function hoje() {
-    return new Date().toLocaleDateString("pt-BR");
+function fechar(){document.getElementById('modal').classList.remove('show')}
+function salvar(tipo){
+ const desc=document.getElementById('fDesc').value.trim(), valor=Number(document.getElementById('fValor').value);
+ if(!desc||!valor){alert('Preencha descrição e valor.');return}
+ const obj={id:Date.now(),desc,valor,data:document.getElementById('fData')?.value||TODAY(),hora:document.getElementById('fHora')?.value||'',venc:document.getElementById('fVenc')?.value||'',pagamento:document.getElementById('fPag')?.value||'',tipo:document.getElementById('fTipo')?.value||'',obs:document.getElementById('fObs')?.value||'',status:'aberto'};
+ if(tipo==='venda')db.vendas.push(obj); if(tipo==='custo')db.custos.push(obj); if(tipo==='despesa')db.despesas.push(obj); if(tipo==='conta')db.contas.push(obj); if(tipo==='boleto')db.boletos.push(obj); if(tipo==='caixa')db.caixa.push(obj); save(); fechar(); render();
 }
-
-function salvar() {
-    localStorage.setItem("raiol_vendas", JSON.stringify(vendas));
-    localStorage.setItem("raiol_despesas", JSON.stringify(despesas));
-    localStorage.setItem("raiol_reserva", reserva);
+function excluir(lista,id){if(confirm('Excluir este lançamento?')){db[lista]=db[lista].filter(x=>x.id!==id);save();render()}}
+function marcarPago(lista,id){const x=db[lista].find(x=>x.id===id);if(x){x.status='pago';x.pagoEm=TODAY();save();render()}}
+function fmtDate(s){if(!s)return'';const p=s.split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:s}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function lista(arr,nome,pagavel=false){
+ if(!arr.length)return '<div class="empty">Nenhum lançamento.</div>';
+ return arr.slice().reverse().map(x=>`<div class="line"><div class="row"><div><b>${esc(x.desc)}</b><div class="mini">${fmtDate(x.data)} ${x.hora||''} ${x.pagamento?`• ${esc(x.pagamento)}`:''}</div>${x.venc?`<div class="mini">Vencimento: ${fmtDate(x.venc)}</div>`:''}</div><div style="text-align:right"><b>${BRL(x.valor)}</b><br>${x.status==='pago'?'<span class="tag ok">Pago</span>':(x.venc?'<span class="tag warn">Em aberto</span>':'')}</div></div><div class="actions"><button class="danger small" onclick="excluir('${nome}',${x.id})">Excluir</button>${pagavel&&x.status!=='pago'?`<button class="ghost small" onclick="marcarPago('${nome}',${x.id})">Marcar pago</button>`:''}</div></div>`).join('')
 }
-
-function registrarVenda() {
-
-    let produto = document.getElementById("produto").value;
-    let valor = Number(document.getElementById("valorVenda").value);
-
-    if (!produto || !valor) {
-        alert("Preencha o produto e o valor.");
-        return;
-    }
-
-    vendas.push({
-        produto: produto,
-        valor: valor,
-        data: hoje()
-    });
-
-    salvar();
-
-    document.getElementById("produto").value = "";
-    document.getElementById("valorVenda").value = "";
-
-    atualizar();
-    alert("Venda registrada!");
+function render(){
+ const d=TODAY(); const vh=sum(db.vendas.filter(x=>x.data===d)), ch=sum(db.custos.filter(x=>x.data===d)), dh=sum(db.despesas.filter(x=>x.data===d));
+ const pagar=sum(db.contas.filter(x=>x.status!=='pago'))+sum(db.boletos.filter(x=>x.status!=='pago'));
+ const entradas=sum(db.vendas)+sum(db.caixa.filter(x=>x.tipo==='entrada')); const saidas=sum(db.custos)+sum(db.despesas)+sum(db.caixa.filter(x=>x.tipo==='saida'));
+ document.getElementById('saldo').textContent=BRL(entradas-saidas); document.getElementById('vHoje').textContent=BRL(vh); document.getElementById('cHoje').textContent=BRL(ch); document.getElementById('dHoje').textContent=BRL(dh); document.getElementById('aPagar').textContent=BRL(pagar); document.getElementById('reserva').textContent=BRL(db.reserva||0); document.getElementById('bar').style.width=Math.min(100,Number(db.reserva||0)/500*100)+'%';
+ const fatur=sum(db.vendas), custos=sum(db.custos), despesas=sum(db.despesas), lucro=fatur-custos-despesas;
+ document.getElementById('resumo').innerHTML=`<div class="line row"><span>Faturamento</span><b>${BRL(fatur)}</b></div><div class="line row"><span>Custos</span><b>${BRL(custos)}</b></div><div class="line row"><span>Despesas</span><b>${BRL(despesas)}</b></div><div class="line row"><span>Resultado</span><b>${BRL(lucro)}</b></div>`;
+ document.getElementById('listaVendas').innerHTML=lista(db.vendas,'vendas'); document.getElementById('listaCustos').innerHTML=lista(db.custos,'custos'); document.getElementById('listaDespesas').innerHTML=lista(db.despesas,'despesas'); document.getElementById('listaContas').innerHTML=lista(db.contas,'contas',true); document.getElementById('listaBoletos').innerHTML=lista(db.boletos,'boletos',true); document.getElementById('listaCaixa').innerHTML=lista(db.caixa,'caixa');
+ document.getElementById('fechamento').innerHTML=`<div class="line row"><span>Entradas</span><b>${BRL(entradas)}</b></div><div class="line row"><span>Saídas</span><b>${BRL(saidas)}</b></div><div class="line row"><span>Saldo</span><b>${BRL(entradas-saidas)}</b></div><div class="line row"><span>Reserva</span><b>${BRL(db.reserva||0)}</b></div>`;
 }
-
-function registrarDespesa() {
-
-    let descricao = document.getElementById("descDespesa").value;
-    let valor = Number(document.getElementById("valorDespesa").value);
-
-    if (!descricao || !valor) {
-        alert("Preencha a descrição e o valor.");
-        return;
-    }
-
-    despesas.push({
-        descricao: descricao,
-        valor: valor,
-        data: hoje()
-    });
-
-    salvar();
-
-    document.getElementById("descDespesa").value = "";
-    document.getElementById("valorDespesa").value = "";
-
-    atualizar();
-    alert("Despesa registrada!");
-}
-
-function adicionarReserva() {
-
-    reserva += 15;
-
-    salvar();
-    atualizar();
-
-    alert("R$ 15 adicionados à reserva de boletos!");
-}
-
-function atualizar() {
-
-    let vendasHoje = vendas.filter(v => v.data === hoje());
-    let despesasHoje = despesas.filter(d => d.data === hoje());
-
-    let totalVendas = vendasHoje.reduce((soma, v) => soma + v.valor, 0);
-    let totalDespesas = despesasHoje.reduce((soma, d) => soma + d.valor, 0);
-
-    document.getElementById("vendasHoje").innerText = dinheiro(totalVendas);
-    document.getElementById("qtdVendas").innerText = vendasHoje.length;
-    document.getElementById("despesasHoje").innerText = dinheiro(totalDespesas);
-    document.getElementById("reserva").innerText = dinheiro(reserva);
-    document.getElementById("saldo").innerText = dinheiro(totalVendas - totalDespesas);
-
-    document.getElementById("listaVendas").innerHTML =
-        vendas.slice().reverse().map(v =>
-            `<div class="linha">
-                <span>${v.produto}</span>
-                <strong class="verde">${dinheiro(v.valor)}</strong>
-            </div>`
-        ).join("") || "<p>Nenhuma venda registrada.</p>";
-
-    document.getElementById("listaDespesas").innerHTML =
-        despesas.slice().reverse().map(d =>
-            `<div class="linha">
-                <span>${d.descricao}</span>
-                <strong class="vermelho">${dinheiro(d.valor)}</strong>
-            </div>`
-        ).join("") || "<p>Nenhuma despesa registrada.</p>";
-}
-
-function mostrar(id, botao) {
-
-    document.querySelectorAll(".secao").forEach(s => {
-        s.classList.remove("ativa");
-    });
-
-    document.getElementById(id).classList.add("ativa");
-
-    document.querySelectorAll(".menu button").forEach(b => {
-        b.classList.remove("active");
-    });
-
-    botao.classList.add("active");
-}
-
-atualizar();
-
+render();
 </script>
-
-</body>
-</html>
+</body></html>
