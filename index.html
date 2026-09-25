@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<title>Raiol Materiais V3.3</title>
+<style>
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--brand:#111827;--danger:#b91c1c;--ok:#166534;--warn:#92400e}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:520px;margin:0 auto;padding-bottom:90px}.top{background:var(--brand);color:#fff;padding:24px 18px 18px;border-radius:0 0 22px 22px}.top small{opacity:.75;letter-spacing:.08em}.top h1{margin:6px 0 0;font-size:26px}.wrap{padding:0 14px}.card{background:var(--card);border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 2px 12px rgba(17,24,39,.08)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 2px 12px rgba(17,24,39,.06)}.metric small{display:block;color:var(--muted);font-size:12px}.metric strong{font-size:18px;display:block;margin-top:5px}.big{font-size:30px;font-weight:800;margin:6px 0}.muted{color:var(--muted);font-size:12px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.line{padding:12px 0;border-bottom:1px solid var(--line)}.line:last-child{border-bottom:0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}button,input,select{font:inherit}button{border:0;border-radius:11px;padding:10px 12px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}button.ghost{background:#eef0f3;color:var(--ink)}button.danger{background:var(--danger)}button.small{font-size:12px;padding:8px 10px}input,select{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:10px;background:#fff;margin:5px 0 10px}label{font-size:12px;color:#4b5563}.nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:520px;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.12);z-index:20}.nav button{background:transparent;color:#6b7280;padding:6px 2px;font-size:11px}.nav button.active{color:#111827;font-weight:800}.sec{display:none}.sec.active{display:block}.empty{text-align:center;padding:16px;color:var(--muted)}.tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef0f3;font-size:11px;color:#374151}.tag.ok{background:#dcfce7;color:var(--ok)}.tag.warn{background:#fef3c7;color:var(--warn)}.tag.danger{background:#fee2e2;color:var(--danger)}.progress{height:9px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:#111827;width:0}.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;z-index:30}.modal.show{display:flex}.sheet{width:100%;max-width:520px;margin:auto;background:#fff;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow:auto}.title{font-size:18px;font-weight:800;margin:0}.subtle{font-size:12px;color:var(--muted)}.kpi{font-size:22px;font-weight:800}.mini{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><small>CONTROLE DA LOJA</small><h1>Raiol Materiais V3.3</h1></header>
+<div class="wrap">
+<section id="home" class="sec active">
+  <div class="card"><div class="subtle">Saldo estimado do caixa</div><div class="big" id="saldo">R$ 0,00</div><div class="subtle">Entradas menos saídas registradas</div></div>
+  <div class="grid">
+    <div class="metric"><small>Vendas hoje</small><strong id="vHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>Custos hoje</small><strong id="cHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>Despesas hoje</small><strong id="dHoje">R$ 0,00</strong></div>
+    <div class="metric"><small>A pagar</small><strong id="aPagar">R$ 0,00</strong></div>
+  </div>
+  <div class="card"><div class="row"><div><div class="title">Reserva para boletos</div><div class="subtle">Meta diária de R$ 15</div></div><div class="kpi" id="reserva">R$ 0,00</div></div><div style="margin:12px 0" class="progress"><div id="bar"></div></div><button onclick="guardarReserva()">Guardar R$ 15 hoje</button></div>
+  <div class="card"><div class="title">Resumo financeiro</div><div id="resumo"></div></div>
+</section>
+<section id="vendas" class="sec"><div class="card"><div class="row"><div class="title">Vendas</div><button class="small" onclick="abrir('venda')">+ Nova venda</button></div><div id="listaVendas"></div></div></section>
+<section id="produtos" class="sec"><div class="card"><div class="row"><div><div class="title">Produtos / Estoque</div><div class="subtle">Cadastre preço de custo, preço de venda e estoque.</div></div><button class="small" onclick="abrir('produto')">+ Produto</button></div><input id="buscaProduto" placeholder="Buscar produto..." oninput="renderProdutos()"><div id="listaProdutos"></div></div></section>
+<section id="historico" class="sec"><div class="card"><div class="row"><div><div class="title">Histórico de vendas</div><div class="subtle">Consulte cada mês sem apagar os meses anteriores.</div></div></div><label>Mês</label><input id="filtroMes" type="month" onchange="renderHistorico()"><div id="resumoMes"></div><div class="actions"><button class="small" onclick="fecharMesAtual()">🔒 Fechar mês</button></div><div id="listaHistorico"></div></div><div class="card"><div class="title">Meses fechados</div><div id="listaFechamentos"></div></div></section>
+<section id="receber" class="sec"><div class="card"><div class="row"><div><div class="title">💳 Dinheiro a receber</div><div class="subtle">Controle das vendas a prazo / fiado.</div></div></div><div id="resumoReceber"></div><div id="listaReceber"></div></div></section>
+<section id="financeiro" class="sec"><div class="card"><div class="row"><div class="title">Custos</div><button class="small" onclick="abrir('custo')">+ Novo custo</button></div><div id="listaCustos"></div></div><div class="card"><div class="row"><div class="title">Despesas</div><button class="small" onclick="abrir('despesa')">+ Nova despesa</button></div><div id="listaDespesas"></div></div></section>
+<section id="pagar" class="sec"><div class="card"><div class="row"><div class="title">Contas a pagar</div><button class="small" onclick="abrir('conta')">+ Nova conta</button></div><div id="listaContas"></div></div><div class="card"><div class="row"><div class="title">Boletos</div><button class="small" onclick="abrir('boleto')">+ Novo boleto</button></div><div id="listaBoletos"></div></div></section>
+<section id="caixa" class="sec"><div class="card"><div class="row"><div class="title">Caixa</div><button class="small" onclick="abrir('caixa')">+ Movimento</button></div><div id="listaCaixa"></div></div><div class="card"><div class="title">Fechamento</div><div id="fechamento"></div></div></section>
+</div>
+<nav class="nav"><button class="active" onclick="mostrar('home',this)">🏠<br>Início</button><button onclick="mostrar('vendas',this)">💰<br>Vendas</button><button onclick="mostrar('produtos',this)">📦<br>Produtos</button><button onclick="mostrar('receber',this)">💳<br>Receber</button><button onclick="mostrar('historico',this)">📅<br>Histórico</button><button onclick="mostrar('financeiro',this)">📊<br>Fin.</button><button onclick="mostrar('pagar',this)">🧾<br>A pagar</button></nav>
+</div>
+<div id="modal" class="modal"><div class="sheet"><div class="row"><div id="modalTitle" class="title"></div><button class="ghost small" onclick="fechar()">Fechar</button></div><div id="modalBody"></div></div></div>
+<script>
+const KEY='raiol_materiais_v3';
+const BRL=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const TODAY=()=>new Date().toISOString().slice(0,10);
+const NOW=()=>new Date().toTimeString().slice(0,5);
+let db=JSON.parse(localStorage.getItem(KEY)||'null')||{vendas:[],custos:[],despesas:[],contas:[],boletos:[],caixa:[],reserva:0,produtos:[],receber:[],fechamentos:[]};
+db.produtos=db.produtos||[]; db.receber=db.receber||[]; db.fechamentos=db.fechamentos||[];
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function sum(arr){return arr.reduce((a,x)=>a+Number(x.valor||0),0)}
+function mostrar(id,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render()}
+function guardarReserva(){db.reserva=Number(db.reserva||0)+15;save();render();alert('R$ 15 adicionados à reserva.');}
+let carrinhoVenda=[];
+function abrir(tipo){
+ const titulo={venda:'Nova venda',custo:'Novo custo',despesa:'Nova despesa',conta:'Nova conta a pagar',boleto:'Novo boleto',caixa:'Novo movimento de caixa',produto:'Cadastrar produto'}[tipo];
+ document.getElementById('modalTitle').textContent=titulo;
+ if(tipo==='produto'){
+   document.getElementById('modalBody').innerHTML=`<label>Nome do produto</label><input id="pNome" placeholder="Ex.: Cimento 50 kg"><label>Categoria</label><input id="pCat" placeholder="Ex.: Cimento"><label>Unidade</label><select id="pUn"><option>un</option><option>kg</option><option>m</option><option>m²</option><option>m³</option><option>caixa</option><option>saco</option><option>lata</option><option>barra</option><option>rolo</option></select><label>Estoque inicial</label><input id="pEst" type="number" step="0.01" placeholder="0"><label>Preço de custo</label><input id="pCusto" type="number" step="0.01" placeholder="0,00"><label>Preço de venda</label><input id="pVenda" type="number" step="0.01" placeholder="0,00"><button onclick="salvarProduto()">Cadastrar produto</button>`;
+   document.getElementById('modal').classList.add('show'); return;
+ }
+ const data=(['venda','custo','despesa','caixa'].includes(tipo))?`<label>Data</label><input id="fData" type="date" value="${TODAY()}"><label>Hora</label><input id="fHora" type="time" value="${NOW()}">`:'';
+ const venc=(['conta','boleto'].includes(tipo))?`<label>Vencimento</label><input id="fVenc" type="date">`:'';
+ let vendaCampos='';
+ if(tipo==='venda'){
+   carrinhoVenda=[];
+   vendaCampos=`<div class="card" style="margin:8px 0;padding:12px;background:#f8fafc"><div class="title" style="font-size:16px">Itens da venda</div><div class="subtle" style="margin-bottom:8px">Adicione vários produtos na mesma venda.</div><label>Produto cadastrado</label><select id="fProduto"><option value="">Escolha um produto</option>${db.produtos.map(p=>`<option value="${p.id}">${esc(p.nome)} — ${BRL(p.precoVenda)} / ${esc(p.unidade)} (estoque ${p.estoque})</option>`).join('')}</select><label>Quantidade</label><input id="fQtd" type="number" min="0.01" step="0.01" value="1"><button type="button" onclick="adicionarItemVenda()">+ Adicionar produto</button><div id="carrinhoItens" style="margin-top:10px"></div></div><label>Descrição da venda</label><input id="fDesc" placeholder="Ex.: Venda balcão / Cliente"><label>Valor total</label><input id="fValor" type="number" step="0.01" value="0" readonly>`;
+ }
+ const pay=tipo==='venda'?`<label>Forma de pagamento</label><select id="fPag" onchange="toggleFiado()"><option>Dinheiro</option><option>PIX</option><option>Débito</option><option>Crédito</option><option>Fiado</option><option>Outro</option></select><div id="fiadoCampos" style="display:none"><label>Cliente</label><input id="fCliente" placeholder="Nome do cliente"><label>Vencimento</label><input id="fReceberVenc" type="date"><label>Observação do fiado</label><input id="fReceberObs" placeholder="Ex.: pagar no dia 10"></div>`:'';
+ const move=tipo==='caixa'?`<label>Tipo</label><select id="fTipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select>`:'';
+ document.getElementById('modalBody').innerHTML=`${vendaCampos}${tipo!=='venda'?`<label>Descrição / produto</label><input id="fDesc" placeholder="Ex.: 7 sacos de cimento"><label>Valor total</label><input id="fValor" type="number" step="0.01" placeholder="0,00">`:''}${data}${venc}${pay}${move}<label>Observação</label><input id="fObs" placeholder="Opcional"><button onclick="salvar('${tipo}')">Salvar ${tipo==='venda'?'venda':'lançamento'}</button>`;
+ document.getElementById('modal').classList.add('show');
+ if(tipo==='venda') renderCarrinho();
+}
+function adicionarItemVenda(){
+ const id=Number(document.getElementById('fProduto')?.value||0), qtd=Number(document.getElementById('fQtd')?.value||0);
+ const p=db.produtos.find(x=>x.id===id);
+ if(!p){alert('Escolha um produto cadastrado.');return}
+ if(qtd<=0){alert('Informe uma quantidade válida.');return}
+ const ja=carrinhoVenda.find(i=>i.produtoId===id);
+ const novaQtd=(ja?ja.qtd:0)+qtd;
+ if(novaQtd>Number(p.estoque)){alert(`Estoque insuficiente de ${p.nome}. Disponível: ${p.estoque} ${p.unidade}`);return}
+ if(ja) ja.qtd=novaQtd; else carrinhoVenda.push({produtoId:id,nome:p.nome,unidade:p.unidade,qtd,preco:Number(p.precoVenda),custo:Number(p.custo)});
+ document.getElementById('fProduto').value='';document.getElementById('fQtd').value='1';renderCarrinho();
+}
+function removerItemVenda(i){carrinhoVenda.splice(i,1);renderCarrinho()}
+function renderCarrinho(){
+ const el=document.getElementById('carrinhoItens'); if(!el)return;
+ if(!carrinhoVenda.length){el.innerHTML='<div class="empty" style="padding:8px">Nenhum produto adicionado.</div>';document.getElementById('fValor').value='0.00';return}
+ let total=0;
+ el.innerHTML=carrinhoVenda.map((i,n)=>{const t=i.qtd*i.preco;total+=t;return `<div class="line"><div class="row"><div><b>${esc(i.nome)}</b><div class="mini">${i.qtd} ${esc(i.unidade)} × ${BRL(i.preco)}</div></div><div style="text-align:right"><b>${BRL(t)}</b><br><button type="button" class="danger small" onclick="removerItemVenda(${n})">Remover</button></div></div></div>`}).join('');
+ document.getElementById('fValor').value=total.toFixed(2);
+}
+function salvarProduto(){const nome=document.getElementById('pNome').value.trim();const categoria=document.getElementById('pCat').value.trim();const unidade=document.getElementById('pUn').value;const estoque=Number(document.getElementById('pEst').value||0);const custo=Number(document.getElementById('pCusto').value||0);const preco=Number(document.getElementById('pVenda').value||0);if(!nome||preco<=0){alert('Informe o nome e o preço de venda.');return}db.produtos.push({id:Date.now(),nome,categoria,unidade,estoque,custo,precoVenda:preco});save();fechar();render();}
+function fechar(){document.getElementById('modal').classList.remove('show')}
+function toggleFiado(){const el=document.getElementById('fiadoCampos');const pag=document.getElementById('fPag')?.value; if(el)el.style.display=pag==='Fiado'?'block':'none';}
+function salvar(tipo){
+ const desc=(document.getElementById('fDesc')?.value||'').trim(), valor=Number(document.getElementById('fValor')?.value||0);
+ if(tipo==='venda'){
+   if(!carrinhoVenda.length){alert('Adicione pelo menos um produto à venda.');return}
+   const total=carrinhoVenda.reduce((a,i)=>a+i.qtd*i.preco,0);
+   if(!total){alert('O total da venda precisa ser maior que zero.');return}
+   const nomeVenda=desc||carrinhoVenda.map(i=>`${i.qtd} ${i.nome}`).join(', ');
+   for(const i of carrinhoVenda){const p=db.produtos.find(x=>x.id===i.produtoId);if(!p||i.qtd>Number(p.estoque)){alert(`Estoque insuficiente de ${i.nome}.`);return}}
+   carrinhoVenda.forEach(i=>{const p=db.produtos.find(x=>x.id===i.produtoId);p.estoque=Number(p.estoque)-i.qtd});
+   const custoTotal=carrinhoVenda.reduce((a,i)=>a+i.qtd*i.custo,0);
+   const pagamento=document.getElementById('fPag')?.value||''; const obj={id:Date.now(),desc:nomeVenda,valor:total,data:document.getElementById('fData')?.value||TODAY(),hora:document.getElementById('fHora')?.value||'',pagamento,obs:document.getElementById('fObs')?.value||'',status:'aberto',itens:carrinhoVenda.map(i=>({...i})),custoTotal,lucro:total-custoTotal};
+   if(pagamento==='Fiado'){const cliente=(document.getElementById('fCliente')?.value||'').trim();const venc=document.getElementById('fReceberVenc')?.value||'';if(!cliente||!venc){alert('Para vender fiado, informe o cliente e o vencimento.');return;}obj.cliente=cliente;obj.vencReceber=venc;obj.statusReceber='aberto';db.receber.push({id:obj.id,vendaId:obj.id,cliente,valor:total,data:obj.data,venc,obs:document.getElementById('fReceberObs')?.value||'',status:'aberto',recebido:0});}
+   db.vendas.push(obj);carrinhoVenda=[];save();fechar();render();return;
+ }
+ if(!desc||!valor){alert('Preencha descrição e valor.');return}
+ const obj={id:Date.now(),desc,valor,data:document.getElementById('fData')?.value||TODAY(),hora:document.getElementById('fHora')?.value||'',venc:document.getElementById('fVenc')?.value||'',pagamento:document.getElementById('fPag')?.value||'',tipo:document.getElementById('fTipo')?.value||'',obs:document.getElementById('fObs')?.value||'',status:'aberto'};
+ if(tipo==='custo')db.custos.push(obj); if(tipo==='despesa')db.despesas.push(obj); if(tipo==='conta')db.contas.push(obj); if(tipo==='boleto')db.boletos.push(obj); if(tipo==='caixa')db.caixa.push(obj); save(); fechar(); render();
+}
+function excluir(lista,id){if(confirm('Excluir este lançamento?')){const x=db[lista].find(v=>v.id===id);if(lista==='vendas'&&x?.itens){x.itens.forEach(i=>{const p=db.produtos.find(v=>v.id===i.produtoId);if(p)p.estoque=Number(p.estoque)+Number(i.qtd)})}db[lista]=db[lista].filter(x=>x.id!==id);save();render()}}
+function marcarPago(lista,id){const x=db[lista].find(x=>x.id===id);if(x){x.status='pago';x.pagoEm=TODAY();save();render()}}
+function fmtDate(s){if(!s)return'';const p=s.split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:s}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function lista(arr,nome,pagavel=false){
+ if(!arr.length)return '<div class="empty">Nenhum lançamento.</div>';
+ return arr.slice().reverse().map(x=>`<div class="line"><div class="row"><div><b>${esc(x.desc)}</b><div class="mini">${fmtDate(x.data)} ${x.hora||''} ${x.pagamento?`• ${esc(x.pagamento)}`:''}</div>${x.itens?.length?`<div class="mini" style="margin-top:4px">${x.itens.map(i=>`${i.qtd} ${esc(i.unidade)} ${esc(i.nome)}`).join(' • ')}</div><div class="mini">Custo: ${BRL(x.custoTotal)} • Lucro: ${BRL(x.lucro)}</div>`:''}${x.venc?`<div class="mini">Vencimento: ${fmtDate(x.venc)}</div>`:''}</div><div style="text-align:right"><b>${BRL(x.valor)}</b><br>${x.status==='pago'?'<span class="tag ok">Pago</span>':(x.venc?'<span class="tag warn">Em aberto</span>':'')}</div></div><div class="actions"><button class="danger small" onclick="excluir('${nome}',${x.id})">Excluir</button>${pagavel&&x.status!=='pago'?`<button class="ghost small" onclick="marcarPago('${nome}',${x.id})">Marcar pago</button>`:''}</div></div>`).join('')
+}
+function excluirProduto(id){if(confirm('Excluir este produto do cadastro? As vendas antigas não serão apagadas.')){db.produtos=db.produtos.filter(p=>p.id!==id);save();render();}}
+function ajustarEstoque(id){const p=db.produtos.find(x=>x.id===id);if(!p)return;const v=prompt(`Estoque atual de ${p.nome}: ${p.estoque} ${p.unidade}.\nDigite a quantidade a adicionar (use número negativo para retirar):`,'0');if(v===null)return;const n=Number(v);if(Number.isNaN(n))return alert('Quantidade inválida.');if(Number(p.estoque)+n<0)return alert('O estoque não pode ficar negativo.');p.estoque=Number(p.estoque)+n;save();render();}
+function renderProdutos(){const el=document.getElementById('listaProdutos');if(!el)return;const q=(document.getElementById('buscaProduto')?.value||'').toLowerCase();const arr=db.produtos.filter(p=>(p.nome+' '+p.categoria).toLowerCase().includes(q));if(!arr.length){el.innerHTML='<div class="empty">Nenhum produto cadastrado.</div>';return}el.innerHTML=arr.map(p=>{const margem=Number(p.precoVenda)-Number(p.custo);return `<div class="line"><div class="row"><div><b>${esc(p.nome)}</b><div class="mini">${esc(p.categoria||'Sem categoria')} • ${esc(p.unidade)} • Custo ${BRL(p.custo)} • Venda ${BRL(p.precoVenda)}</div></div><div style="text-align:right"><b>${p.estoque} ${esc(p.unidade)}</b><br><span class="tag ${p.estoque<=0?'danger':p.estoque<=5?'warn':'ok'}">${p.estoque<=0?'Sem estoque':p.estoque<=5?'Estoque baixo':'Em estoque'}</span></div></div><div class="actions"><button class="small" onclick="ajustarEstoque(${p.id})">Ajustar estoque</button><button class="danger small" onclick="excluirProduto(${p.id})">Excluir</button></div><div class="mini">Margem por unidade: ${BRL(margem)}</div></div>`}).join('')}
+function render(){
+ const d=TODAY(); const vh=sum(db.vendas.filter(x=>x.data===d)), ch=sum(db.custos.filter(x=>x.data===d)), dh=sum(db.despesas.filter(x=>x.data===d));
+ const pagar=sum(db.contas.filter(x=>x.status!=='pago'))+sum(db.boletos.filter(x=>x.status!=='pago'));
+ const entradas=sum(db.vendas.filter(x=>x.pagamento!=='Fiado'))+sum(db.receber.filter(x=>x.status==='pago').map(x=>({valor:x.recebido||x.valor})))+sum(db.caixa.filter(x=>x.tipo==='entrada')); const saidas=sum(db.custos)+sum(db.despesas)+sum(db.caixa.filter(x=>x.tipo==='saida'));
+ document.getElementById('saldo').textContent=BRL(entradas-saidas); document.getElementById('vHoje').textContent=BRL(vh); document.getElementById('cHoje').textContent=BRL(ch); document.getElementById('dHoje').textContent=BRL(dh); document.getElementById('aPagar').textContent=BRL(pagar); document.getElementById('reserva').textContent=BRL(db.reserva||0); document.getElementById('bar').style.width=Math.min(100,Number(db.reserva||0)/500*100)+'%';
+ const fatur=sum(db.vendas), custos=sum(db.custos), despesas=sum(db.despesas), lucro=fatur-custos-despesas;
+ document.getElementById('resumo').innerHTML=`<div class="line row"><span>Faturamento</span><b>${BRL(fatur)}</b></div><div class="line row"><span>Custos</span><b>${BRL(custos)}</b></div><div class="line row"><span>Despesas</span><b>${BRL(despesas)}</b></div><div class="line row"><span>Resultado</span><b>${BRL(lucro)}</b></div>`;
+ document.getElementById('listaVendas').innerHTML=lista(db.vendas,'vendas'); document.getElementById('listaCustos').innerHTML=lista(db.custos,'custos'); document.getElementById('listaDespesas').innerHTML=lista(db.despesas,'despesas'); document.getElementById('listaContas').innerHTML=lista(db.contas,'contas',true); document.getElementById('listaBoletos').innerHTML=lista(db.boletos,'boletos',true); document.getElementById('listaCaixa').innerHTML=lista(db.caixa,'caixa');
+ document.getElementById('fechamento').innerHTML=`<div class="line row"><span>Entradas</span><b>${BRL(entradas)}</b></div><div class="line row"><span>Saídas</span><b>${BRL(saidas)}</b></div><div class="line row"><span>Saldo</span><b>${BRL(entradas-saidas)}</b></div><div class="line row"><span>Reserva</span><b>${BRL(db.reserva||0)}</b></div>`;
+ renderProdutos(); renderReceber(); renderHistorico();
+}
+function receber(id){const x=db.receber.find(r=>r.id===id);if(!x)return;const restante=Number(x.valor)-Number(x.recebido||0);const v=prompt(`Cliente: ${x.cliente}\nRestante: ${BRL(restante)}\nDigite quanto recebeu agora:` ,String(restante.toFixed(2)));if(v===null)return;const n=Number(v);if(!(n>0)||n>restante){alert('Valor inválido.');return;}x.recebido=Number(x.recebido||0)+n;x.status=x.recebido>=x.valor?'pago':'parcial';x.recebimentos=x.recebimentos||[];x.recebimentos.push({data:TODAY(),valor:n});save();render();}
+function renderReceber(){const total=sum(db.receber.filter(x=>x.status!=='pago').map(x=>({valor:Number(x.valor)-Number(x.recebido||0)})));const vencido=sum(db.receber.filter(x=>x.status!=='pago'&&x.venc<TODAY()).map(x=>({valor:Number(x.valor)-Number(x.recebido||0)})));const el=document.getElementById('resumoReceber');if(!el)return;el.innerHTML=`<div class="grid"><div class="metric"><small>A receber</small><strong>${BRL(total)}</strong></div><div class="metric"><small>Vencido</small><strong>${BRL(vencido)}</strong></div></div>`;const list=document.getElementById('listaReceber');if(!db.receber.length){list.innerHTML='<div class="empty">Nenhum valor a receber.</div>';return}list.innerHTML=db.receber.slice().reverse().map(x=>{const restante=Number(x.valor)-Number(x.recebido||0);const venc=x.status!=='pago'&&x.venc<TODAY();return `<div class="line"><div class="row"><div><b>${esc(x.cliente)}</b><div class="mini">Venda ${fmtDate(x.data)} • Vencimento ${fmtDate(x.venc)}</div><div class="mini">Total ${BRL(x.valor)} • Recebido ${BRL(x.recebido||0)}</div></div><div style="text-align:right"><b>${BRL(restante)}</b><br><span class="tag ${x.status==='pago'?'ok':venc?'danger':'warn'}">${x.status==='pago'?'Recebido':x.status==='parcial'?'Parcial':venc?'Vencido':'Em aberto'}</span></div></div><div class="actions">${x.status!=='pago'?`<button class="small" onclick="receber(${x.id})">Receber pagamento</button>`:''}<button class="danger small" onclick="excluirReceber(${x.id})">Excluir</button></div></div>`}).join('')} }
+function excluirReceber(id){if(!confirm('Excluir este registro de dinheiro a receber? A venda original continuará no histórico.'))return;db.receber=db.receber.filter(x=>x.id!==id);save();render();}
+function renderHistorico(){const input=document.getElementById('filtroMes');if(!input)return; if(!input.value)input.value=TODAY().slice(0,7);const mes=input.value;const arr=db.vendas.filter(v=>v.data?.slice(0,7)===mes);const fat=sum(arr);const lucro=arr.reduce((a,v)=>a+Number(v.lucro||0),0);document.getElementById('resumoMes').innerHTML=`<div class="grid"><div class="metric"><small>Vendas</small><strong>${BRL(fat)}</strong></div><div class="metric"><small>Lucro bruto</small><strong>${BRL(lucro)}</strong></div></div>`;document.getElementById('listaHistorico').innerHTML=arr.length?lista(arr,'vendas'):'<div class="empty">Nenhuma venda neste mês.</div>';const fs=db.fechamentos.filter(x=>x.mes===mes);document.getElementById('listaFechamentos').innerHTML=db.fechamentos.length?db.fechamentos.slice().reverse().map(x=>`<div class="line"><b>${x.mes}</b><div class="mini">Faturamento ${BRL(x.faturamento)} • Lucro bruto ${BRL(x.lucro)} • Fechado em ${fmtDate(x.fechadoEm)}</div></div>`).join(''):'<div class="empty">Nenhum mês fechado.</div>';}
+function fecharMesAtual(){const input=document.getElementById('filtroMes');const mes=input?.value;if(!mes)return; if(db.fechamentos.some(x=>x.mes===mes)){alert('Esse mês já está fechado.');return;}const arr=db.vendas.filter(v=>v.data?.slice(0,7)===mes);const fatur=sum(arr),lucro=arr.reduce((a,v)=>a+Number(v.lucro||0),0);if(!confirm(`Fechar ${mes}? As vendas continuarão salvas e poderão ser consultadas depois.`))return;db.fechamentos.push({mes,faturamento:fatur,lucro,fechadoEm:TODAY()});save();render();alert('Mês fechado e arquivado.');}
+render();
+</script>
+</body></html>
